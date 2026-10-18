@@ -1,11 +1,8 @@
+// src/auth/dto/login.dto.ts
 import { z } from 'zod';
 
-export const authCredentialsSchema = z.object({
-  phone: z.string().min(1, 'Le numéro de téléphone est obligatoire'),
-  pin: z.string()
-    .length(4, 'Le PIN doit contenir exactement 4 chiffres')
-    .regex(/^\d+$/, 'Le PIN ne doit contenir que des chiffres'),
+export const loginSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(8),
 });
-
-
-export type AuthCredentialsDto = z.infer<typeof authCredentialsSchema>;
+export type LoginDto = z.infer<typeof loginSchema>;
