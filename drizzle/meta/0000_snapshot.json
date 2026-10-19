@@ -1,5 +1,5 @@
 {
-  "id": "91f9b46e-0352-4ab7-ba86-767d1e3b59a8",
+  "id": "a126ff35-58d1-4129-8bbb-b8e639e1590f",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -57,7 +57,7 @@
         },
         "token_hash": {
           "name": "token_hash",
-          "type": "varchar(255)",
+          "type": "varchar(64)",
           "primaryKey": false,
           "notNull": true
         },
@@ -69,7 +69,7 @@
         },
         "expires_at": {
           "name": "expires_at",
-          "type": "timestamp",
+          "type": "timestamp with time zone",
           "primaryKey": false,
           "notNull": true
         }
@@ -297,8 +297,8 @@
           "primaryKey": false,
           "notNull": true
         },
-        "password": {
-          "name": "password",
+        "password_hash": {
+          "name": "password_hash",
           "type": "varchar(255)",
           "primaryKey": false,
           "notNull": true
@@ -324,14 +324,14 @@
         },
         "created_at": {
           "name": "created_at",
-          "type": "timestamp",
+          "type": "timestamp with time zone",
           "primaryKey": false,
           "notNull": true,
           "default": "now()"
         },
         "updated_at": {
           "name": "updated_at",
-          "type": "timestamp",
+          "type": "timestamp with time zone",
           "primaryKey": false,
           "notNull": true,
           "default": "now()"
