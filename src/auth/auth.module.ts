@@ -1,30 +1,24 @@
-import { Module } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { JwtModule } from '@nestjs/jwt';
-import { PassportModule } from '@nestjs/passport';
-import { UsersModule } from '../users/users.module';
+// src/auth/auth.module.ts   ← le SEUL endroit où on choisit le provider
+import { DynamicModule, Module } from '@nestjs/common';
 import { AuthController } from './auth.controller';
-import { AuthService } from './auth.service';
-import { JwtStrategy } from './strategies/jwt.strategy';
+import { LocalAuthModule } from './providers/local/local-auth.module';
 
-@Module({
-  imports: [
-    UsersModule,
-    PassportModule.register({ defaultStrategy: 'jwt' }),
-    JwtModule.registerAsync({
-      inject: [ConfigService],
-      useFactory: (config: ConfigService) => ({
-        secret: config.getOrThrow<string>('JWT_ACCESS_SECRET'),
-        signOptions: {
-          expiresIn: config.getOrThrow<string>(
-            'JWT_ACCESS_EXPIRES_IN',
-          ) as `${number}${'s' | 'm' | 'h' | 'd'}`,
-        },
-      }),
-    }),
-  ],
-  controllers: [AuthController],
-  providers: [AuthService, JwtStrategy],
-  exports: [AuthService],
-})
-export class AuthModule {}
+const AUTH_PROVIDERS = {
+  local: { module: LocalAuthModule, controllers: [AuthController] },
+  // auth0: { module: Auth0Module, controllers: [] },   ← plus tard
+} as const;
+
+export type AuthProviderName = keyof typeof AUTH_PROVIDERS;
+
+@Module({})
+export class AuthModule {
+  static register(provider: AuthProviderName): DynamicModule {
+    const { module, controllers } = AUTH_PROVIDERS[provider];
+    return {
+      module: AuthModule,
+      imports: [module],
+      controllers: [...controllers],
+      exports: [module], // expose CredentialsAuth / TokenVerifier à AppModule (pour AuthGuard)
+    };
+  }
+}

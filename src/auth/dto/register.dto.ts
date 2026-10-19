@@ -1,10 +1,11 @@
 // src/auth/dto/register.dto.ts
 import { z } from 'zod';
+import { emailSchema, nameSchema } from './shared';
 
 export const registerSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(8),
-  firstName: z.string().min(1).max(100),
-  lastName: z.string().min(1).max(100),
+  email: emailSchema,
+  password: z.string().min(8).max(72), // bcrypt ignore tout après 72 octets
+  firstName: nameSchema,
+  lastName: nameSchema,
 });
 export type RegisterDto = z.infer<typeof registerSchema>;
